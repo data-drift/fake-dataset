@@ -1,6 +1,7 @@
 name: Daily data drift
 on:
-  push
+  schedule:
+  - cron: "0 0 * * *"
 permissions:
   contents: write
 jobs:
@@ -15,6 +16,5 @@ jobs:
           author_name: Automatic Datawarehouse Bot
           author_email: Automatic@Datawarehouse.Bot
           message: 'data: new data drift'
-          new_branch: data-drift
  
   
