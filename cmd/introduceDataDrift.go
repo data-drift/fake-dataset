@@ -5,7 +5,10 @@ Copyright © 2023 NAME HERE sammy.teillet@gmail.com
 package cmd
 
 import (
+	"encoding/csv"
 	"fmt"
+	"math/rand"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +20,35 @@ var introduceDataDriftCmd = &cobra.Command{
 	Long:  `Given a csv file, this command will introduce a random modification in the historical data`,
 	Run: func(cmd *cobra.Command, args []string) {
 		filepath := args[0]
-		fmt.Println("introduceDataDrift called", filepath)
+		newFilePath := filepath + ".new"
+		csvFile, err := os.Open(filepath)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("Successfully Opened CSV file")
+		defer csvFile.Close()
+		csvLines, err := csv.NewReader(csvFile).ReadAll()
+		fmt.Printf("len(csvLines): %d \n", len(csvLines))
+
+		if err != nil {
+			fmt.Println(err)
+		}
+		randomIndex := rand.Intn(len(csvLines)-1) + 1
+		fmt.Printf("randomIndex: %d \n", randomIndex)
+		newCsvLines := append(csvLines[:randomIndex], csvLines[randomIndex+1:]...)
+
+		newCsvFile, err := os.Create(newFilePath)
+		csvwriter := csv.NewWriter(newCsvFile)
+
+		_ = csvwriter.WriteAll(newCsvLines)
+
+		csvwriter.Flush()
+		csvFile.Close()
+
+		_ = os.Remove(filepath)
+		_ = os.Rename(newFilePath, filepath)
+		fmt.Println("Successfully removed a line in CSV file.")
+
 	},
 }
 
