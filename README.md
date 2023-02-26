@@ -10,6 +10,10 @@ The [fake-data-generator.go](fake-data-generator.go) is a script to generate tha
 
 [WIP] The other script job is to randomly modify historical data:
 
+```sh
+go run main.go introduceDataDrift mart/organisation-mrr.csv
+```
+
 - **Modify a historical pricing plan**. For instance, let's say we are in March. Due to a human error `organisationA` was set to have a 50€ pricing plan in January, but in reality they had a 30€ pricing plan.
 - **Add or remove an organisation**. For instance, due to a bug in the pipeline, we discover that 10 organisations were not stored in the `mart/organisation-mrr` table in january. So they are added later.
 
